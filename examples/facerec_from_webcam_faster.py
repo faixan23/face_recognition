@@ -13,9 +13,14 @@ for folder in subfolders:
     files = os.listdir(person_folder)
     for img in files:
         person_image = face_recognition.load_image_file(person_folder + "/" + img)
-        person_face_encoding = face_recognition.face_encodings(person_image)[0]
-        known_face_encodings.append(person_face_encoding)
-        known_face_names.append(folder)
+        enc = face_recognition.face_encodings(person_image)
+        if len(enc) > 0:
+            person_face_encoding = face_recognition.face_encodings(person_image)[0]
+            known_face_encodings.append(person_face_encoding)
+            known_face_names.append(folder)
+        # else:
+        #     print(person_folder)
+        #     print(img)
 
 # This is a demo of running face recognition on live video from your webcam. It's a little more complicated than the
 # other example, but it includes some basic performance tweaks to make things run a lot faster:
@@ -58,7 +63,7 @@ while True:
         face_names = []
         for face_encoding in face_encodings:
             # See if the face is a match for the known face(s)
-            matches = face_recognition.compare_faces(known_face_encodings, face_encoding)
+            matches = face_recognition.compare_faces(known_face_encodings, face_encoding, tolerance=0.6)
             name = "Unknown"
 
             # # If a match was found in known_face_encodings, just use the first one.
